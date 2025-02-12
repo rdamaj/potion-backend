@@ -20,6 +20,15 @@ provider:
   environment:
     STAGE: ${opt:stage, self:provider.stage, "dev"}
 
+# Add this section to disable built-in esbuild
+custom:
+  prune:
+    automatic: true
+    number: 10
+  stages:
+    - staging
+    - prod
+
 functions:
   walletsSyncJob:
     handler: wallets/jobs/sync.handler
@@ -33,15 +42,4 @@ functions:
           cors: true
 
 plugins:
-  - serverless-bundle
   - serverless-prune-plugin
-
-custom:
-  bundle:
-    linting: false
-  prune:
-    automatic: true
-    number: 10
-  stages:
-    - staging
-    - prod

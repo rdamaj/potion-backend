@@ -1,7 +1,7 @@
 import _ from "lodash";
 import Joi from "joi";
-import * as Trades from "../../../../models/trades";
-import { getApp, parameterTypes, response200 } from "../../../../helpers/api";
+import * as Trades from "../../../../models/trades.js";
+import { getApp, parameterTypes, response200 } from "../../../../helpers/api.js";
 
 const config = {
     type: parameterTypes.query,
