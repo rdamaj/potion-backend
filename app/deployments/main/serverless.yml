@@ -4,21 +4,29 @@ configValidationMode: warn
 
 package:
   individually: true
+  patterns:
+    - '!node_modules/**'
+    - '../../../package.json'
+    - '../../../app/**'
 
 provider:
   name: aws
   timeout: 15
+  deploymentBucket:
+    name: potion-backend
   runtime: nodejs18.x
+  architecture: arm64
   stage: ${opt:stage, "staging"}
   region: us-east-1
   memorySize: 2048
-  profile: mucho
+  profile: default
   logs:
     restApi: true
   tracing:
     lambda: true
   environment:
     STAGE: ${opt:stage, self:provider.stage, "dev"}
+    NODE_OPTIONS: '--enable-source-maps --experimental-vm-modules'
 
 # Add this section to disable built-in esbuild
 custom:
@@ -34,12 +42,21 @@ functions:
     handler: wallets/jobs/sync.handler
 
   walletsTradesAPI:
-    handler: wallets/api/trades.handler
+    handler: app/deployments/main/wallets/api/trades.handler
     events:
       - http:
           path: wallets/trades
           method: get
           cors: true
+    layers:
+      - {Ref: DependenciesLambdaLayer}
 
 plugins:
   - serverless-prune-plugin
+
+layers:
+  dependencies:
+    path: ../../../lambda-layer
+    name: ${self:service}-${opt:stage, 'dev'}-dependencies
+    package:
+      artifact: ../../../lambda-layer/layer.zip
