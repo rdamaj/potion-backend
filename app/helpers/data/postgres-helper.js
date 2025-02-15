@@ -1,6 +1,6 @@
 import postgres from "postgres";
 
-import { POSTGRES } from "../constants";
+import { POSTGRES } from "../constants.js";
 
 let sql = null;
 
@@ -80,17 +80,48 @@ const insertMany = async (tableName, data) => {
     }
 }
 
-const upsertOne = async (tableName, data, values) => {
+const upsertMany = async (tableName, data, uniqueColumns = ['id']) => {
     try {
-        let result = await sql`
-            INSERT INTO ${sql(tableName)} ${
-            sql(data, values)
-        }
-            ON CONFLICT (normalized) DO UPDATE SET normalized=EXCLUDED.normalized 
-            RETURNING id`;
+        const updateColumns = Object.keys(data[0]).filter(col => !uniqueColumns.includes(col));
+        const allColumns = Object.keys(data[0]);
+        const query = `
+            INSERT INTO "${tableName}" (${allColumns.map(col => `"${col}"`).join(', ')}) 
+            VALUES ${data.map(row => 
+                `(${Object.values(row).map(val => 
+                    typeof val === 'string' ? `'${val}'` : val
+                ).join(', ')})`
+            ).join(', ')}
+            ON CONFLICT ("${uniqueColumns.join('", "')}") 
+            DO UPDATE SET ${updateColumns.map(col => `"${col}" = EXCLUDED."${col}"`).join(', ')}
+            RETURNING id;
+        `;        
+        const result = await sql.unsafe(query);
+        return result;
+    } catch(e) {
+        console.error('Error in upsertMany:', e);
+        console.error('Error details:', e.message);
+        return null;
+    }
+}
+
+const upsertOne = async (tableName, data, uniqueColumns = ['id']) => {
+    try {
+        const updateColumns = Object.keys(data).filter(col => !uniqueColumns.includes(col));
+        const allColumns = Object.keys(data);
+        const query = `
+            INSERT INTO "${tableName}" (${allColumns.map(col => `"${col}"`).join(', ')}) 
+            VALUES (${Object.values(data).map(val => 
+                typeof val === 'string' ? `'${val}'` : val
+            ).join(', ')})
+            ON CONFLICT ("${uniqueColumns.join('", "')}") 
+            DO UPDATE SET ${updateColumns.map(col => `"${col}" = EXCLUDED."${col}"`).join(', ')}
+            RETURNING id;
+        `;
+        const result = await sql.unsafe(query);
         return result[0].id;
     } catch(e) {
-        console.error(e);
+        console.error('Error in upsertOne:', e);
+        console.error('Error details:', e.message);
         return null;
     }
 }
@@ -128,4 +159,5 @@ export {
     selectOne,
     selectMany,
     upsertOne,
+    upsertMany,
 };

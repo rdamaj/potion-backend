@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import * as Postgres from "../helpers/data/postgres-helper";
-import { sql } from "../helpers/data/postgres-helper";
+import * as Postgres from "../helpers/data/postgres-helper.js";
+import { sql } from "../helpers/data/postgres-helper.js";
 
 const TABLE_NAME = 'trades';
 

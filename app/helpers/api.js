@@ -1,6 +1,6 @@
 //import { parse } from "lambda-multipart-parser-v2";
 
-import * as Postgres from "./data/postgres-helper";
+import * as Postgres from "./data/postgres-helper.js";
 
 const parameterTypes = {
     query: 'queryStringParameters',

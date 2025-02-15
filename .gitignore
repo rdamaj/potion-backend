@@ -1,0 +1,3 @@
+lambda-layer/nodejs/*
+lambda-layer/nodejs/**/*
+node_modules/**/*

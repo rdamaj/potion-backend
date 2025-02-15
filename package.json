@@ -1,6 +1,7 @@
 {
   "name": "potion-backend-template",
   "version": "1.69",
+  "type": "module",
   "dependencies": {
     "axios": "^1.6.8",
     "dotenv": "^16.4.1",
@@ -12,7 +13,6 @@
   },
   "devDependencies": {
     "prettier": "^3.2.4",
-    "serverless-bundle": "^6.1.0",
     "serverless-plugin-common-excludes": "^4.0.0",
     "serverless-plugin-include-dependencies": "^6.1.1",
     "serverless-prune-plugin": "^2.0.2"
