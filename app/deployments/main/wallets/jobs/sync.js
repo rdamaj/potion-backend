@@ -14,7 +14,7 @@ const config = {
 const handler = getApp(async () => {
     const THIRTY_DAYS_AGO = Math.floor(Date.now() / 1000) - (30 * 24 * 60 * 60);
     const solPrice = await HeliusClient.getSolPrice();
-    for (const wallet of WALLETS.slice(20,30)) {
+    for (const wallet of WALLETS) {
         try{
             const trades = await HeliusClient.getAllWalletTrades(wallet, THIRTY_DAYS_AGO);
             const tradedTokens = await parseTrades(trades, wallet, solPrice);
