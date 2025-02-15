@@ -1,16 +1,5 @@
-import HeliusClient from "./helius-client.js";
 
 const WRAPPED_SOL = 'So11111111111111111111111111111111111111112';
-
-export const debug = async (trades) => {
-    for (const trade of trades) {
-        let swap = trade.events.swap;
-        let tokenAddress = swap.tokenInputs ? swap.tokenInputs[0]?.mint : swap.tokenOutputs[0]?.mint;
-        if(trade.description.includes('2uZzU9nxXjyy8BR5Mcdah8hTezh7ftqgpXx8agAqdCPo')) {
-            console.log(JSON.stringify(swap));
-        }
-    }
-}
 
 const handleSwapEvent = (trade) => {
     const swap = trade.events.swap;
@@ -147,17 +136,6 @@ const updateFinalStats = async (tokenData, solPrice) => {
     delete tokenData.transactions;
 }
 
-const sanitizeData = (tradedTokens) => {
-    for (const tokenData of Object.values(tradedTokens)) {
-        for(const key of Object.keys(tokenData)){
-            if(tokenData[key] == null || tokenData[key] == undefined || tokenData[key] == Infinity){
-                console.log(`bad data for ${key} in ${tokenData.token_address}`)
-                console.log(tokenData);
-            }
-        }
-    }
-}
-
 export const parseTrades = async (trades, walletAddress, solPrice) => {
     let tradedTokens = {};
     console.log(`parsing ${trades.length} trades for ${walletAddress}`);
@@ -183,6 +161,5 @@ export const parseTrades = async (trades, walletAddress, solPrice) => {
             updateFinalStats(tokenData, solPrice)
         )
     );
-    sanitizeData(tradedTokens);
     return tradedTokens;
 }

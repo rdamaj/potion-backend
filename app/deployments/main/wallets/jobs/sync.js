@@ -2,7 +2,7 @@ import _ from "lodash";
 import { getApp, parameterTypes } from "../../../../helpers/api.js";
 import { WALLETS } from "../../../../helpers/constants.js";
 import HeliusClient from "../../../../helpers/data/helius-client.js";
-import { parseTrades, debug } from "../../../../helpers/data/pnl.js";
+import { parseTrades } from "../../../../helpers/data/pnl.js";
 import { upsertMany } from "../../../../helpers/data/postgres-helper.js";
 
 const config = {
